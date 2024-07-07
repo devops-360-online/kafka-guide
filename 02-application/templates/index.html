@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>BUS TRACKER</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+    </head>
+
+    <body>
+        <h1>BUS TRACKER Lille</h1>
+        <p> HAVE FUN</p>
+        <div id="map" style="width: 900px; height: 600px;"></div>
+
+        <script>
+            var map = L.map('map').setView([51.505, -0.09], 13);
+
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            maxZoom: 19,
+            id: 'mapbox.streets',
+            accessToken: 'pk.eyJ1IjoibmFzcmxhZGliIiwiYSI6ImNseWJya3drazFlZGgya3F0Z2h1MWJnNGYifQ.OP5T-Wb8LavbiEAfhFmHsA'
+        }).addTo(map);
+        
+        var marker1, marker2;
+
+        function updateMapView() {
+            var bounds = [];
+            if (marker1) bounds.push(marker1.getLatLng());
+            if (marker2) bounds.push(marker2.getLatLng());
+            if (bounds.length > 0) {
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
+        }
+
+        mapMarker1 = []
+        mapMarker2 = []
+        mapMarker3 = []
+
+        
+        var source = new EventSource('/topic/busdata');
+        console.log(source);
+        source.addEventListener('message', function(event) {
+            
+            console.log('Message')
+            obj = JSON.parse(event.data)
+            console.log(obj)
+            
+            if (obj.busline == "00001") {
+                for (let i = 0; i < mapMarker1.length; i++) {
+                    map.removeLayer(mapMarker1[i])                              
+                }
+                marker1 = L.marker([obj.latitude, obj.longitude]).addTo(map);
+                mapMarker1.push(marker1)
+            }
+
+            if (obj.busline == "00002") {
+                for (let i = 0; i < mapMarker2.length; i++) {
+                    map.removeLayer(mapMarker2[i])                              
+                }
+                marker2 = L.marker([obj.latitude, obj.longitude]).addTo(map);
+                mapMarker2.push(marker2)
+            }
+            updateMapView();
+
+        }, false);
+
+        </script>
+    </body>
+</html>

@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: kafka-consumer-client
+    user-test-app: kafka-clients
+  name: kafka-consumer-client
+  namespace: kafka
+spec:
+  backoffLimit: 0
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      labels:
+        app: kafka-consumer-client
+        job-name: kafka-consumer-client
+        user-test-app: kafka-clients
+      name: kafka-consumer-client
+      namespace: my-project
+    spec:
+      containers:
+        - env:
+            - name: BOOTSTRAP_SERVERS
+              value: dev-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
+            - name: TOPIC
+              value: testBusData
+            # - name: MESSAGE_COUNT
+            #   value: "100"
+            - name: GROUP_ID
+              value: my-group
+            - name: CLIENT_TYPE
+              value: KafkaConsumer
+          image: quay.io/strimzi-test-clients/test-clients:latest-kafka-3.7.1
+          imagePullPolicy: IfNotPresent
+          name: kafka-consumer-client
+      restartPolicy: "Never"
+    

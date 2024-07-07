@@ -1,0 +1,3 @@
+extraEnvs:
+  - name: STRIMZI_FEATURE_GATES
+    value: +UseKRaft
