@@ -45,4 +45,6 @@ Instructions for installing Kafka using Kubernetes will be provided in this sect
 
 Tracking a bus to see its real-time position using Flask, JavaScript, and leafletjs .
 
-![Result](images/busTrackerLille.mp4)
+<video width="320" height="240" controls>
+  <source src="images/busTrackerLille.mp4" type="video/mp4">
+</video>
